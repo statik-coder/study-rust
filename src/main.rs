@@ -87,5 +87,21 @@ fn main() {
     for num in array {
         println!("- {}", num)
     }
-    println!("LIFT OFF!!!")
+    println!("LIFT OFF!!!");
+
+    separate("Structs");
+
+    struct Player {
+        name: String,
+        username: String,
+        age: u8,
+        skill_level: String
+    }
+
+    let player = Player {
+        name: String::from("Artem"),
+        username: String::from("stat1k"),
+        age: 19,
+        skill_level: String::from("")
+    }
 }
