@@ -194,4 +194,30 @@ fn main() {
         }
         Some(num) => println!("The value is: {}", num)
     }
+
+    // ============================================
+    //
+    // In The Rust book there was a big part of explaining of packages,
+    // exports, modules, crates ans so on...
+    //
+    // ============================================
+
+    separate("Standard library");
+
+    // Vector
+    let vector: Vec<i32> = Vec::new();
+
+    // Also we can create vector with `vec!` macros
+    let mut v = vec![1, 2, 3]; // It automatically
+
+    // In vector we can, for example, push some values (but variable must be mutable)
+    v.push(8);
+    v.push(3);
+
+    let s1 = String::from("hello,");
+    let s2 = String::from("world!");
+
+    let s3 = s1 + &s2;
+
+    println!("{}", s3);
 }
