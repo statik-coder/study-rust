@@ -1,3 +1,5 @@
+use std::{collections::HashMap, hash::Hash};
+
 fn separate(label: &str) {
     println!(" ");
     println!("=========####=========");
@@ -97,7 +99,7 @@ fn main() {
         name: String,
         username: String,
         age: u8,
-        skill_level: String
+        skill_level: String,
     }
 
     impl Player {
@@ -108,9 +110,7 @@ fn main() {
         fn send_message(&self, receiver: &Player, message: &str) -> () {
             println!(
                 "User {} sends message to {}: {}",
-                self.username,
-                receiver.username,
-                message
+                self.username, receiver.username, message
             )
         }
     }
@@ -119,19 +119,18 @@ fn main() {
         name: String::from("Artem"),
         username: String::from("stat1k"),
         age: 19,
-        skill_level: String::from("High++")
+        skill_level: String::from("High++"),
     };
 
     let player2 = Player {
         name: String::from("Oleg"),
         username: String::from("oleg-33"),
         age: 20,
-        skill_level:String::from("High++")
+        skill_level: String::from("High++"),
     };
 
     player1.say_hi();
     player2.send_message(&player1, "HI, mate! What's going?");
-
 
     // To print objects in console we should in braces type "{:#?}"
     // use debug syntax
@@ -142,20 +141,23 @@ fn main() {
     #[derive(Debug)]
     enum IPVersion {
         V4,
-        V6
+        V6,
     }
 
     struct IPAddress {
         version: IPVersion,
-        value: String
+        value: String,
     }
 
     let home_addr = IPAddress {
         version: IPVersion::V4,
-        value: String::from("192.168.0.1")
+        value: String::from("192.168.0.1"),
     };
 
-    println!("My home address is {} (version: {:?})", &home_addr.value, &home_addr.version);
+    println!(
+        "My home address is {} (version: {:?})",
+        &home_addr.value, &home_addr.version
+    );
 
     // Also possible to create instances with associated functions
     // That functions implements in types and calls with this syntax - TYPE::AF
@@ -168,7 +170,7 @@ fn main() {
         fn create_v4(value: &str) -> IPAddress {
             IPAddress {
                 version: IPVersion::V4,
-                value: String::from(value)
+                value: String::from(value),
             }
         }
     }
@@ -180,7 +182,7 @@ fn main() {
     #[derive(Debug)]
     enum IpAddr {
         V4(String),
-        V6(String)
+        V6(String),
     };
 
     let v4addr = IpAddr::V4(String::from("localhost"));
@@ -192,7 +194,7 @@ fn main() {
         None => {
             println!("There is no value")
         }
-        Some(num) => println!("The value is: {}", num)
+        Some(num) => println!("The value is: {}", num),
     }
 
     // ============================================
@@ -220,4 +222,88 @@ fn main() {
     let s3 = s1 + &s2;
 
     println!("{}", s3);
+
+    // Hash maps
+    separate("Hash maps");
+
+    let mut scores: HashMap<String, i32> = HashMap::new();
+
+    let blue_team_name = String::from("Eagles");
+    let yellow_team_name = String::from("Bears");
+
+    scores.insert(blue_team_name, 50);
+    scores.insert(yellow_team_name, 20);
+
+    match scores.get(&String::from("Eagles")) {
+        Some(val) => println!("The 'Eagles' team has {} points.", val),
+        None => println!(";( not found"),
+    }
+
+    // Exercises
+    let mut num_vector: Vec<usize> = vec![
+        7, 2, 43, 7, 3, 2, 6, 8, 3, 3, 7, 8, 9, 5, 2, 4, 6, 6, 123, 321, 213, 456, 456, 457, 324,
+        23, 65, 45, 678, 5, 6345, 34, 534, 5, 375675, 67865, 9678, 65654435, 43, 5, 34, 5, 7643,
+        6575, 7, 7, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2,
+    ];
+    num_vector.sort();
+    let num_vector_length: usize = num_vector.len();
+
+    let mut mediane: usize = 0;
+
+    let middle_value: usize = num_vector_length / 2;
+
+    if num_vector_length % 2 != 0 {
+        match num_vector.get(middle_value + 1) {
+            Some(right_val) => match num_vector.get(middle_value) {
+                Some(left_value) => mediane = (left_value + right_val) / 2,
+                None => println!("Can't find left value!"),
+            },
+            None => {
+                println!("Can't find right value!")
+            }
+        }
+    } else {
+        match num_vector.get(middle_value) {
+            Some(val) => mediane = val.to_owned(),
+            None => println!("Can't find value!"),
+        }
+    }
+
+    let mut moda: usize = 0;
+    let mut moda_count: usize = 0;
+
+    let mut value_counts: HashMap<usize, usize> = HashMap::new();
+
+    for value in num_vector {
+        let possible_value = value_counts.entry(value).or_insert(0);
+        *possible_value += 1;
+    }
+
+    let values: Vec<usize> = value_counts.values().cloned().collect();
+    let keys: Vec<usize> = value_counts.keys().cloned().collect();
+
+    match values.iter().max() {
+        Some(max_value_times_repeated) => {
+            moda_count = max_value_times_repeated.to_owned();
+
+            for key in keys {
+                match value_counts.get(&key) {
+                    Some(value) => {
+                        if value == max_value_times_repeated {
+                            moda = key
+                        }
+                    }
+                    None => println!("There no such value!"),
+                }
+            }
+        }
+        None => println!("No max value in the vector!"),
+    };
+
+    println!(
+        "The moda is: {} and it's value is repeated {} times!",
+        moda, moda_count
+    );
+    println!("The mediane is: {}", mediane);
 }
