@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{arch::asm, collections::HashMap, fmt::Result};
 
 fn separate(label: &str) {
     println!(" ");
@@ -306,4 +306,57 @@ fn main() {
         moda, moda_count
     );
     println!("The mediane is: {}", mediane);
+
+    separate("Traits, lifetimes, etc");
+
+    struct Location<T> {
+        longitude: T,
+        latitude: T,
+    }
+
+    impl<T> Location<T> {
+        fn get_longitude(&self) -> &T {
+            return &self.longitude;
+        }
+
+        fn get_latitude(&self) -> &T {
+            return &self.latitude;
+        }
+    }
+
+    let london_city = Location {
+        latitude: 12.121231231,
+        longitude: 180.12121233,
+    };
+
+    println!(
+        "The London center is on point: {}, {}",
+        london_city.get_longitude(),
+        london_city.get_latitude()
+    );
+
+    struct Point<T> {
+        x: T,
+        y: T,
+    }
+
+    pub trait Summary {
+        fn summerize(&self) -> String;
+    }
+
+    impl Summary for Point<i32> {
+        fn summerize(&self) -> String {
+            return format!("{}, {}", self.x, self.y);
+        }
+    }
+
+    impl Summary for Location<String> {
+        fn summerize(&self) -> String {
+            return format!("{}, {}", self.latitude, self.longitude);
+        }
+    }
+
+    let point1 = Point { x: 12, y: 180 };
+
+    println!("{}", point1.summerize())
 }
