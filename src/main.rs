@@ -358,5 +358,30 @@ fn main() {
 
     let point1 = Point { x: 12, y: 180 };
 
-    println!("{}", point1.summerize())
+    println!("{}", point1.summerize());
+
+    separate("Links lifetimes");
+
+    {
+        // let r: i32;
+        {
+            // let x = 5;
+            // I can't pass the "x" reference to the "r" varible, because x not be valid on 375 line and will be droped on 372 line (end of scope)
+            // r = &x
+        }
+        // println!("r: {}", r)
+    }
+
+    fn longest<'a>(a: &'a String, b: &'a String) -> &'a String {
+        if a.len() > b.len() {
+            return a;
+        } else {
+            return b;
+        }
+    }
+
+    let string1 = String::from("long string");
+    let string2 = String::from("short");
+
+    println!("The longest string is: {}", longest(&string1, &string2));
 }
