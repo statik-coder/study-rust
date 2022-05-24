@@ -384,4 +384,38 @@ fn main() {
     let string2 = String::from("short");
 
     println!("The longest string is: {}", longest(&string1, &string2));
+
+    separate("Closures");
+
+    // Own implemented cacher (patter: memoization or lazy evaluation)
+    struct Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        _worker: T,
+        _values: HashMap<u32, u32>,
+    }
+
+    impl<T> Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        fn new(worker: T) -> Cacher<T> {
+            Cacher {
+                _worker: worker,
+                _values: HashMap::new(),
+            }
+        }
+
+        fn value(&mut self, arg: u32) -> &u32 {
+            match self._values.get(arg) {
+                Some(value) => value,
+                None => {
+                    let calculated = (self._worker)(arg);
+                    self._values.insert(arg, calculated);
+                    &calculated
+                }
+            }
+        }
+    }
 }
