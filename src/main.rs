@@ -1,4 +1,8 @@
-use std::{arch::asm, collections::HashMap, fmt::Result};
+use std::{
+    arch::asm,
+    collections::{hash_map::Entry, HashMap},
+    fmt::Result,
+};
 
 fn separate(label: &str) {
     println!(" ");
@@ -388,32 +392,33 @@ fn main() {
     separate("Closures");
 
     // Own implemented cacher (patter: memoization or lazy evaluation)
-    struct Cacher<T>
+    struct Cacher<T, K, V>
     where
-        T: Fn(u32) -> u32,
+        T: Fn(&K) -> V,
+        K: std::cmp::Eq + std::hash::Hash,
     {
         _worker: T,
-        _values: HashMap<u32, u32>,
+        _values: HashMap<K, V>,
     }
 
-    impl<T> Cacher<T>
+    impl<T, K, V> Cacher<T, K, V>
     where
-        T: Fn(u32) -> u32,
+        T: Fn(&K) -> V,
+        K: std::cmp::Eq + std::hash::Hash,
     {
-        fn new(worker: T) -> Cacher<T> {
+        pub fn new(worker: T) -> Cacher<T, K, V> {
             Cacher {
                 _worker: worker,
                 _values: HashMap::new(),
             }
         }
 
-        fn value(&mut self, arg: u32) -> &u32 {
-            match self._values.get(arg) {
-                Some(value) => value,
-                None => {
-                    let calculated = (self._worker)(arg);
-                    self._values.insert(arg, calculated);
-                    &calculated
+        pub fn value(&mut self, arg: K) -> &V {
+            match self._values.entry(arg) {
+                Entry::Occupied(entry) => entry.into_mut(),
+                Entry::Vacant(entry) => {
+                    let result = (self._worker)(entry.key());
+                    entry.insert(result)
                 }
             }
         }
