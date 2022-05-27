@@ -1,7 +1,7 @@
 use std::{
-    arch::asm,
     collections::{hash_map::Entry, HashMap},
-    fmt::Result,
+    thread,
+    time::Duration,
 };
 
 fn separate(label: &str) {
@@ -423,6 +423,24 @@ fn main() {
             }
         }
     }
+
+    let calculations = |int: &i32| -> i32 {
+        println!("Start calculations...");
+
+        for i in 0..10 {
+            thread::sleep(Duration::from_millis(200));
+            println!("Progress: {}%", i * 10);
+        }
+
+        int.clone() + 1
+    };
+
+    let mut cacher = Cacher::new(calculations);
+
+    println!("45 is {}", cacher.value(45));
+    println!("10 is {}", cacher.value(10));
+    println!("45 is {}", cacher.value(45));
+    println!("10 is {}", cacher.value(10));
 }
 
 // Check this code for clues: https://paste.gg/p/anonymous/66782f48cca543ff932b099809f78c46
