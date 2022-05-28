@@ -2,6 +2,7 @@ use std::{
     collections::{hash_map::Entry, HashMap},
     thread,
     time::Duration,
+    vec,
 };
 
 fn separate(label: &str) {
@@ -441,6 +442,18 @@ fn main() {
     println!("10 is {}", cacher.value(10));
     println!("45 is {}", cacher.value(45));
     println!("10 is {}", cacher.value(10));
+
+    let vector = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    for item in vector {
+        println!("Item: {}", item + 5);
+    }
+
+    let some_vector = vec![12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+    // Must know that iterators are lazy and they won't be called automatically
+    let processed: Vec<i32> = some_vector.iter().map(|val| val * 2).collect();
+    println!("Doubled Vector is: {:?}", processed);
 }
 
 // Check this code for clues: https://paste.gg/p/anonymous/66782f48cca543ff932b099809f78c46
